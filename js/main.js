@@ -1,55 +1,111 @@
-'use strict'; 
+'use strict';
 
 {
+  const newComment = document.getElementById('new-comment');
+  const btnAdd = document.getElementById('btn-add');
+  
+  const tbody = document.querySelector('tbody');
+  
   const tasks = [];
 
-  document.getElementById('btn').addEventListener('click', () => {
-    const comment = document.getElementById('comment').value;
-    tasks.push(comment);
+  //状態ボタンの作成
+  function createStatusBtn() {
+    const statusBtn = document.createElement('button');
+    statusBtn.textContent = '作業中';
+    statusBtn.classList.add('status');
+    return statusBtn;
+  }
 
-    const taskId = tasks.indexOf(comment);
-
-    const tr = document.createElement('tr');
-    const tbody = document.querySelector('tbody');
-    tbody.appendChild(tr);
-  
-    
-    const td1 = document.createElement('td');
-    td1.textContent = taskId;
-    tr.appendChild(td1);
-
-    const td2 = document.createElement('td');
-    td2.textContent = tasks[taskId];
-    tr.appendChild(td2);
-    
-    const td3 = document.createElement('td');
-    tr.appendChild(td3);
-    const doingBtn = document.createElement('button'); 
-    doingBtn.textContent = '作業中';
-    td3.appendChild(doingBtn);
-    
-    const td4 = document.createElement('td');
-    tr.appendChild(td4);
-    const deleteBtn = document.createElement('button'); 
+  //削除ボタンの作成
+  function createDeleteBtn() {
+    const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '削除';
+  
+    //削除ボタンが押された時の処理
+    deleteBtn.addEventListener('click', e => {
+      deleteTask(e.target);
+    });
+  
+    return deleteBtn;
+  }
+  
+  //新規タスクの追加
+  function addNewTask() {
+    //input要素の中身が空の場合は、処理をしない
+    if (newComment.value === '') {
+      return;
+    }  
+    
+    tasks.push({
+      id: tasks.length,
+      comment: newComment.value,
+      status: '作業中',
+    });  
+
+    //追加されたタスク（最後尾にある配列）をHTML上で表示する
+    const tr = document.createElement('tr');
+    tbody.appendChild(tr);
+    
+    for (let i = 0; i < 4; i++) {
+      const td = document.createElement('td');
+      tr.appendChild(td);
+    }  
+    
+    const td1 = tr.children[0];
+    td1.textContent = tasks[tasks.length - 1].id;
+    
+    const td2 = tr.children[1];
+    td2.textContent = tasks[tasks.length - 1].comment;
+    
+    const td3 = tr.children[2];
+    const statusBtn = createStatusBtn();
+    td3.appendChild(statusBtn);
+    
+    const td4 = tr.children[3];
+    const deleteBtn = createDeleteBtn();
     td4.appendChild(deleteBtn);
 
-    document.getElementById('comment').value = '';
+    //input要素の中身を空にする
+    newComment.value = '';
+  }  
+
+  function deleteTask(pushedBtn) {
+    //押された削除ボタンに対応するタスクのidを取得し、該当のタスクを削除する
+    const targetTr = pushedBtn.parentNode.parentNode;
+    const targetId = targetTr.firstElementChild.textContent;
+    tasks.splice(targetId, 1);
+
+    //一旦、tbodyの中身を全削除し、新たにidを振り直し、残っている全てのタスクを表示する。
+    tbody.innerHTML = '';
+
+    tasks.forEach((task, index) => {
+      const tr = document.createElement('tr');
+      tbody.appendChild(tr);
+
+      for (let i = 0; i < 4; i++) {
+        const td = document.createElement('td');
+        tr.appendChild(td);
+      }  
+
+      const td1 = tr.children[0];
+      td1.textContent = index;
+
+      const td2 = tr.children[1];
+      td2.textContent = task.comment;
+
+      const td3 = tr.children[2];
+      const statusBtn = createStatusBtn();
+      td3.appendChild(statusBtn);
+
+      const td4 = tr.children[3];
+      const deleteBtn = createDeleteBtn();
+      td4.appendChild(deleteBtn);
+    });  
+  }  
 
 
-    // 以下、ループ処理を使ってtdとtrの作成を試みたが、失敗。
-    // const tableRow = [];
-    // tableRow.push(taskId);
-    // tableRow.push(tasks[taskId]);
-    // tableRow.push(document.createElement('button').textContent = '作業中');
-    // tableRow.push(document.createElement('button').textContent = '削除');
-
-    // tableRow.forEach( item => {
-    //   const td = document.createElement('td');
-    //   td.textContent = item;
-    //   tr.appendChild(td);
-    // });
-    
-
+  btnAdd.addEventListener('click', () => {
+    addNewTask();
   });
+
 }
