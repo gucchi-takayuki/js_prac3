@@ -9,7 +9,7 @@
   const tasks = [];
 
   //状態ボタンの作成
-  function createStatusBtn() {
+  const createStatusBtn = () => {
     const statusBtn = document.createElement('button');
 
     statusBtn.addEventListener('click', e => {
@@ -20,7 +20,7 @@
   }
 
   //削除ボタンの作成
-  function createDeleteBtn() {
+  const createDeleteBtn = () => {
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '削除';
   
@@ -33,7 +33,7 @@
   }
   
   //新規タスクの追加
-  function addNewTask() {
+  const addNewTask = () => {
     //input要素の中身が空の場合は、処理をしない
     if (newComment.value === '') {
       return;
@@ -74,7 +74,7 @@
   }  
 
   //タスク削除機能
-  function deleteTask(pushedBtn) {
+  const deleteTask = pushedBtn => {
     //押された削除ボタンに対応するタスクのidを取得し、該当のタスクを削除する
     const targetTr = pushedBtn.parentNode.parentNode;
     const targetId = targetTr.firstElementChild.textContent;
@@ -110,7 +110,7 @@
   }  
 
   //タスク状態の変更機能
-  function changeStatus(pushedBtn) {
+  const changeStatus  = pushedBtn => {
   //押されたボタンに対応するタスクのidを取得し、該当のタスクの状態を変更する
     const targetTr = pushedBtn.parentNode.parentNode;
     const targetId = targetTr.firstElementChild.textContent;
